@@ -49,10 +49,10 @@
   entrypoint should invoke the the implemtation if no command is specified or
   the first element of the command list is an option (starts with a =-=). Only
   the Quicklisp installer is included as an installed Quicklisp is not
-  particularly amenable to Dockerization (there is no real system-wide install
-  option (the user has to have write bits to the entire Quicklisp hierarchy)
-  and installing fetches the package lists (pinning them to the point in time
-  the image was made)).
+  particularly amenable to Dockerization for two reasons. First there is no
+  real system-wide install option, the user has to have write bits to the
+  entire Quicklisp hierarchy. Second, installing fetches the package lists,
+  pinning them to the point in time the image was made.
 
   In addition to the fat images, there should be a set of tags for a "slim"
   variant that includes only the implementation, the dependencies needed to
@@ -68,8 +68,31 @@
   control. However, these nightly images should be considered "best effort" and
   may get scaled back or stopped altogether at some point in the future.
 
+* Infrastructure
+
+  The images are automatically built using Gitlab CI. Gitlab CI was chosen
+  largely because of its extreme flexibility, Travis CI's new free-tier limits,
+  and Github Actions both not providing hosted ARM instances and not providing
+  a secure way to bring custom runners to public repos.
+
+  The runners for this Gitlab group are currently hosted by Eric Timmons. See
+  [[file:ci.org][ci.org]] for info on how these runners are configured.
+
+  We use [[https://github.com/docker-library/bashbrew][bashbrew]] to build the images. This is the same tool used by the Docker
+  Official Images team. It makes building multi-arch images easy, makes it easy
+  to submit iamges to the Official Images program, and means we don't need to
+  write as much of our own tooling (yay!).
+
 * Roadmap
 
+  + Sign the images pushed to the clfoundation org on Docker Hub. Blocked by:
+    1. Need to have a second person willing to have signing abilities to reduce
+       the bus factor.
+    2. bashrew is unable to sign image manifests. We'd either need to replace
+       bashbrew or get a feature upstreamed to sign them.
+    3. Some base images (such as openjdk, used by the ABCL images) are not
+       signed. Need to determine if we should sign them even though we don't
+       have a complete chain of trust.
   + Add automatic Quicklisp install capability to the entrypoint script. This
     will likely install Quicklisp using the bundled install script (if it is
     not already installed) if an environment variable is set. There will likely
@@ -78,8 +101,18 @@
   + Add a "kitchen sink" image. This image would have every CL implementation
     available, as well as the libraries necessary to load every library in the
     primary Quicklisp distribution. This would likely be based on the
-    [[https://github.com/daewok/lisp-devel-docker/][=daewok/lisp-devel-docker=]] image. Before implementing this image, we need
-    to figure out:
-    1. the automatic Quicklisp install mentioned above
-    2. decide which ASDF version to include as well as how to include it
-    3. decide if a user other than the root user should be created
+    [[https://github.com/daewok/lisp-devel-docker/][=daewok/lisp-devel-docker=]] image. Blocked by:
+    1. The automatic Quicklisp install mentioned above.
+    2. Need to decide if the latest ASDF version should be included and
+       how. Some people are very picky about which version of ASDF they use and
+       some ways of installing ASDF make it very hard to replace with an older
+       version.
+    3. Decide if a user other than the root user should be created.
+
+* History
+
+  These images are derived from Eric Timmons's CL Docker images, with some
+  improvements to add a few more features and better follow the guidelines of
+  the Official Images program. They were moved to community orgs in order to
+  encourage more community participation and try to ensure the images survive
+  if he ever has less time to dedicate to them.

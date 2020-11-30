@@ -1,0 +1,23 @@
+#+TITLE: CI Setup
+
+Some loosely organized notes on setting up CI for this repo.
+
+An important consideration when building Docker images is to try and reuse
+layers as frequently as possible. Most CI setups for building Docker images
+start from scratch every time. If no steps are taken otherwise, this means no
+layers are reused (builds will take longer and users will have to download new
+image layers more frequently). A common approach to solving this is to pull
+previous versions of the image before building and telling Docker they are safe
+to use as a cache by passing the =--cache-from= option to =docker
+build=. However, bashbrew does not support this.
+
+Therefore, we use dedicated machines to build these images. Storage on these
+machines is persisted between runs and they accept no jobs from unprotected
+branches or repos outside the cl-docker-images group. We will likely have to
+implement some sort of old image cleanup jobs in the near future.
+
+There are four runners set up for this group with the following tags:
+=bashbrew-amd64=, =bashbrew-arm64v8=, =bashbrew-arm32v7=, and
+=bashbrew-winamd64=. Each should be configured to take jobs only from protected
+refs. Additionally, each must have bashbrew installed and on the path. The
+amd64 runner should also have manifest-tool installed.
