@@ -8,8 +8,9 @@
   share common layers and methodologies (such as entrypoint behavior) as much
   as possible.
 
-  Docker is a useful technology for Lisp as it can make some CI/CD and
-  deployment tasks easier.
+  Docker is a useful technology for Lisp as it can make some CI/CD, deployment,
+  and development tasks easier. Additionally, it can be an easy way to get
+  someone new started in the wonderful world of Common Lisp.
 
   So far, we publish the following types of images:
 
