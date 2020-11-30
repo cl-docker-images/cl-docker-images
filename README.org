@@ -1,0 +1,85 @@
+#+TITLE: CL Docker Images Project
+
+* Overview
+
+  The purpose of this project is to make it easy to use any open source ANSI
+  Common Lisp implementation inside a Docker container. To that end, we publish
+  a variety of prebuilt images to the [[https://hub.docker.com/u/clfoundation][=clfoundation= org on Docker Hub]] that
+  share common layers and methodologies (such as entrypoint behavior) as much
+  as possible.
+
+  Docker is a useful technology for Lisp as it can make some CI/CD and
+  deployment tasks easier.
+
+  So far, we publish the following types of images:
+
+  + Implementation specific :: These images contain a single Common Lisp
+    implementation.
+
+  We publish images for the following platforms. If someone would like to
+  donate hardware or expertise for setting up environments for other platforms,
+  please reach out!
+
+  + =linux/amd64=
+  + =linux/arm/v7=
+  + =linux/arm64/v8=
+  + =windows/amd64=
+
+* Implementation Specific Images
+
+  These images contain a single Common Lisp implementation. They should all
+  follow best practices for Docker and be designed so that if upstream wanted,
+  the image could be submitted to [[https://github.com/docker-library/official-images][Docker's Official Image Program]] (aka the
+  Docker standard library).
+
+  We currently publish images for the following implementations:
+
+  + [[https://hub.docker.com/r/clfoundation/abcl][ABCL]]
+  + [[https://hub.docker.com/r/clfoundation/ccl][CCL]]
+  + [[https://hub.docker.com/r/clfoundation/ecl][ECL]]
+  + [[https://hub.docker.com/r/clfoundation/sbcl][SBCL]]
+
+  Any requests or offers of support for new implementation specific images
+  should be made as an issue on this repo.
+
+  For every supported version of an implementation, the default tag should be a
+  "fat" image that contains libraries equivalent to those found in
+  [[https://hub.docker.com/_/buildpack-deps][buildpack-deps]], the CL implementation itself, the source code for the
+  implementation, a specialized entrypoint, and the Quicklisp installer. The
+  entrypoint should invoke the the implemtation if no command is specified or
+  the first element of the command list is an option (starts with a =-=). Only
+  the Quicklisp installer is included as an installed Quicklisp is not
+  particularly amenable to Dockerization (there is no real system-wide install
+  option (the user has to have write bits to the entire Quicklisp hierarchy)
+  and installing fetches the package lists (pinning them to the point in time
+  the image was made)).
+
+  In addition to the fat images, there should be a set of tags for a "slim"
+  variant that includes only the implementation, the dependencies needed to
+  start the implementation, and the same specialized entrypoint as above.
+
+  For implementations that support it, there should also be a set of
+  =windowsservercore= based tags and Alpine based tags (useful for space
+  constraints or creating static executables).
+
+  We try to bump versions within a week of a new version of the implementation
+  being released. In addition to building images for released versions, we
+  attempt to build nightly images directly from the implementation's source
+  control. However, these nightly images should be considered "best effort" and
+  may get scaled back or stopped altogether at some point in the future.
+
+* Roadmap
+
+  + Add automatic Quicklisp install capability to the entrypoint script. This
+    will likely install Quicklisp using the bundled install script (if it is
+    not already installed) if an environment variable is set. There will likely
+    be additional environment variables to configure the owner of the Quicklisp
+    install, where it is located, which dist version to install, etc.
+  + Add a "kitchen sink" image. This image would have every CL implementation
+    available, as well as the libraries necessary to load every library in the
+    primary Quicklisp distribution. This would likely be based on the
+    [[https://github.com/daewok/lisp-devel-docker/][=daewok/lisp-devel-docker=]] image. Before implementing this image, we need
+    to figure out:
+    1. the automatic Quicklisp install mentioned above
+    2. decide which ASDF version to include as well as how to include it
+    3. decide if a user other than the root user should be created
