@@ -86,8 +86,8 @@
 * Roadmap
 
   + Sign the images pushed to the clfoundation org on Docker Hub. Blocked by:
-    1. Need to have a second person willing to have signing abilities to reduce
-       the bus factor.
+    1. Need to have a second person willing to have signing abilities to
+       increase the bus factor.
     2. bashrew is unable to sign image manifests. We'd either need to replace
        bashbrew or get a feature upstreamed to sign them.
     3. Some base images (such as openjdk, used by the ABCL images) are not
