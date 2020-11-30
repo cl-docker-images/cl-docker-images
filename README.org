@@ -34,10 +34,10 @@
 
   We currently publish images for the following implementations:
 
-  + [[https://hub.docker.com/r/clfoundation/abcl][ABCL]]
-  + [[https://hub.docker.com/r/clfoundation/ccl][CCL]]
-  + [[https://hub.docker.com/r/clfoundation/ecl][ECL]]
-  + [[https://hub.docker.com/r/clfoundation/sbcl][SBCL]]
+  + [[https://hub.docker.com/r/clfoundation/abcl][ABCL]] :: Source at [[https://gitlab.common-lisp.net/cl-docker-images/abcl]]
+  + [[https://hub.docker.com/r/clfoundation/ccl][CCL]] :: Source at [[https://gitlab.common-lisp.net/cl-docker-images/ccl]]
+  + [[https://hub.docker.com/r/clfoundation/ecl][ECL]] :: Source at [[https://gitlab.common-lisp.net/cl-docker-images/ecl]]
+  + [[https://hub.docker.com/r/clfoundation/sbcl][SBCL]] :: Source at [[https://gitlab.common-lisp.net/cl-docker-images/sbcl]]
 
   Any requests or offers of support for new implementation specific images
   should be made as an issue on this repo.
